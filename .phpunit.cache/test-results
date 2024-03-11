@@ -1,0 +1,1 @@
+{"version":1,"defects":{"EntityServiceTest::testSomething":5,"EntityServiceTest::testSomethingTrue":5,"EntityServiceTest::testGetEntityServiceProvider":5},"times":{"EntityServiceTest::testSomething":0.002,"EntityServiceTest::testSomethingTrue":0.002,"EntityServiceTest::testGetEntityServiceProvider":0.002}}
