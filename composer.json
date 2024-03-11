@@ -1,4 +1,13 @@
 {
+    "name": "vekas/entityserviceprovider",
+    "description": "a library that is dedicated to establish a behavioural class for the entity like remove, update, remove other related entities, do something with Aspect of web application ",
+    "authors": [
+        {
+            "name": "Vekas Dev"
+        }
+    ],
+    "license": "MIT",
+    "type": "library",
     "require" :{
         "psr/container": "^2.0",
         "phpunit/phpunit": "^11.0"
