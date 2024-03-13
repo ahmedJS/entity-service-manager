@@ -9,4 +9,8 @@ class EntityNotExistException extends \Exception {
         $this->code = 404;
         $this->message = "the field $entityName was not set";
     }
+
+    function getEntityName() {
+        return $this->entityName;
+    }
 }
