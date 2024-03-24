@@ -8,6 +8,10 @@ use Vekas\EntityService\Interfaces\EntityServiceProviderInterface;
 use Vekas\EntityService\Interfaces\EntityServiceInterface;
 use Psr\Container\ContainerInterface;
 
+
+/**
+ * class that is responsible for provide a business logic layer for every entity registered
+ */
 class EntityServiceProvider implements EntityServiceProviderInterface{
 
     private $services = [];
@@ -24,6 +28,7 @@ class EntityServiceProvider implements EntityServiceProviderInterface{
 
 
     /**
+     * provide a service class for given entity class
      * @throws ServiceNotExistException if provider not registered
      * @return EntityService
      */

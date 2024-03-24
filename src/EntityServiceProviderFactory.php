@@ -45,7 +45,7 @@ class EntityServiceProviderFactory {
                 throw new InvalidArgumentException("you must provide php file and with return type array");
             }
         } else {
-            throw new ExceptionsFileDoesNotExistException("file path provided : $path does not exists");
+            throw new FileDoesNotExistException("file path provided : $path does not exists");
         }
     }
 
