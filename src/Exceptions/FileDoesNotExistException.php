@@ -2,6 +2,6 @@
 
 namespace Vekas\EntityService\Exceptions;
 
-class FileDoesNotExistException {
+class FileDoesNotExistException extends \Exception{
 
 }
