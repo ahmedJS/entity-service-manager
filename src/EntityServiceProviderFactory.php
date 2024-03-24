@@ -9,6 +9,8 @@ use PHPUnit\Runner\FileDoesNotExistException;
 use Psr\Container\ContainerInterface;
 use Vekas\EntityService\EntityServiceProvider;
 use Vekas\EntityService\Exceptions\FileDoesNotExistException as ExceptionsFileDoesNotExistException;
+use Vekas\EntityService\Interfaces\EntityServiceProviderInterface;
+use Vekas\EntityService\Interfaces\EntityServiceProviderRegistererInterface;
 
 class EntityServiceProviderFactory {
 
@@ -17,9 +19,13 @@ class EntityServiceProviderFactory {
      */
     function __construct(
         private ContainerInterface $container,
-        private  $entityManager
+        private $entityManager,
+        private EntityServiceProviderRegistererInterface $entityServiceProviderRegisterer
     ) {}
     
+    function register() {
+        $this->entityServiceProviderRegisterer->register();
+    }
     /**
      * @param $arr the array that contains the entity full qualified class name in the key
      * and service full qualified class name in the value
