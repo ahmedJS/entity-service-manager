@@ -1,7 +1,9 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use Vekas\EntityService\ArrayEntityServiceRegisterer;
 use Vekas\EntityService\BasicEntityManager;
+use Vekas\EntityService\PhpFileServiceRegisterer;
 use Vekas\EntityService\Tests\Entities\Message;
 use Vekas\EntityService\Tests\EntityServices\MessagesService;
 use DI\Container;
@@ -19,8 +21,13 @@ class EntityServiceProviderFactoryTest extends TestCase {
     {
         $em = self::getEntityManager();
         $di = new Container();
+        $registerer = new ArrayEntityServiceRegisterer ($em,$di);
 
-        $entityServiceProviderFactory = new EntityServiceProviderFactory($di,$em);
+        $entityServiceProviderFactory = new EntityServiceProviderFactory(
+            $di,
+            $em,
+            $registerer
+        );
         
         self::$entityServiceProviderFactory = $entityServiceProviderFactory;
     }
@@ -37,7 +44,12 @@ class EntityServiceProviderFactoryTest extends TestCase {
         $arr = [
             Message::class => MessagesService::class
         ];
-        $provider = self::$entityServiceProviderFactory->registerFromArray($arr);
+        $providerFactory = self::$entityServiceProviderFactory;
+        /** @var  ArrayEntityServiceRegisterer */
+        $providerFactory->getRegisterer()->setArray($arr);
+
+        $provider = $providerFactory->provide();
+
         $this->assertInstanceOf(EntityServiceProvider::class,$provider);
         return $provider;
     }
@@ -48,10 +60,39 @@ class EntityServiceProviderFactoryTest extends TestCase {
         $this->assertInstanceOf(MessagesService::class,$service);
     }
 
-    function testRegisterFromPhpFilePath() {
-        $provider = self::$entityServiceProviderFactory->registerFromPhpFile(
-            __DIR__."/config/entity_service_mapping.php"
+
+    function testSetAndGetRegistererClass() {
+        $providerFactory = self::$entityServiceProviderFactory;
+
+        // change the registerer which is registered before
+        $registerer = new PhpFileServiceRegisterer(
+            $providerFactory->getEntityManger(),
+            $providerFactory->getContainer()
         );
+
+        $registerer->setPath(realpath(__DIR__."/config/entity_service_mapping.php"));
+        
+        $providerFactory->setRegisterer($registerer);
+
+        $this->assertInstanceOf(PhpFileServiceRegisterer::class,$providerFactory->getRegisterer());
+
+    }
+    function testRegisterFromPhpFilePath() {
+
+        $providerFactory = self::$entityServiceProviderFactory;
+
+        // change the registerer which is registered before
+        $registerer = new PhpFileServiceRegisterer(
+            $providerFactory->getEntityManger(),
+            $providerFactory->getContainer()
+        );
+
+        $registerer->setPath(__DIR__."/config/entity_service_mapping.php");
+        
+        $providerFactory->setRegisterer($registerer);
+
+        $provider = $providerFactory->provide();
+
         $this->assertInstanceOf(EntityServiceProvider::class,$provider);
         return $provider;
     }
