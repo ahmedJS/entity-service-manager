@@ -2,16 +2,18 @@
 
 
 namespace Vekas\EntityService;
-use Vekas\EntityService\Interfaces\EntityServiceProviderRegistererInterface;
 use Vekas\EntityService\EntityServiceProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Container\ContainerInterface;
 use InvalidArgumentException;
 use Vekas\EntityService\Exceptions\FileDoesNotExistException;
+use Vekas\EntityService\Interfaces\EntityServiceProviderRegistererInterface;
 
 class PhpFileServiceRegisterer implements EntityServiceProviderRegistererInterface {
 
     private $path;
+
+
     /**
      * @param EntityManagerInterface $entityManager
      * @param ContainerInterface $container
