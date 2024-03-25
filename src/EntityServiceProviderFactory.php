@@ -11,20 +11,50 @@ use Vekas\EntityService\EntityServiceProvider;
 use Vekas\EntityService\Exceptions\FileDoesNotExistException as ExceptionsFileDoesNotExistException;
 use Vekas\EntityService\Interfaces\EntityServiceProviderInterface;
 use Vekas\EntityService\Interfaces\EntityServiceProviderRegistererInterface;
-
 class EntityServiceProviderFactory {
 
     /**
      * @param EntityManagerInterface $entityManager 
+     * @param EntityServiceProviderRegistererInterface $entityServiceProviderRegisterer
      */
     function __construct(
         private ContainerInterface $container,
         private $entityManager,
-        private EntityServiceProviderRegistererInterface $entityServiceProviderRegisterer
+        private $entityServiceProviderRegisterer
     ) {}
     
-    function register() {
-        $this->entityServiceProviderRegisterer->register();
+
+    /**
+     * @return EntityServiceProvider
+     */
+    function provide() {
+        return $this->entityServiceProviderRegisterer->register();
+    }
+
+    /**
+     * get the registerer strategy class
+     *
+     * @return EntityServiceProviderRegistererInterface
+     */
+    function getRegisterer() {
+        return $this->entityServiceProviderRegisterer;
+    }
+
+    /**
+     * set the entity services registerer
+     * @param EntityServiceProviderRegistererInterface $registerer
+     * @return void
+     */
+    function setRegisterer($registerer) {
+        $this->entityServiceProviderRegisterer = $registerer;
+    }
+
+    function getEntityManger() {
+        return $this->entityManager;
+    }
+
+    function getContainer() {
+        return $this->getContainer();
     }
 
 }
