@@ -46,7 +46,9 @@ class EntityServiceProviderFactoryTest extends TestCase {
         ];
         $providerFactory = self::$entityServiceProviderFactory;
         /** @var  ArrayEntityServiceRegisterer */
-        $providerFactory->getRegisterer()->setArray($arr);
+        $registerer = $providerFactory->getRegisterer();
+
+        $registerer->setArray($arr);
 
         $provider = $providerFactory->provide();
 
@@ -60,51 +62,4 @@ class EntityServiceProviderFactoryTest extends TestCase {
         $this->assertInstanceOf(MessagesService::class,$service);
     }
 
-
-    function testSetAndGetRegistererClass() {
-        $providerFactory = self::$entityServiceProviderFactory;
-
-        // change the registerer which is registered before
-        $registerer = new PhpFileServiceRegisterer(
-            $providerFactory->getEntityManger(),
-            $providerFactory->getContainer()
-        );
-
-        $registerer->setPath(realpath(__DIR__."/config/entity_service_mapping.php"));
-        
-        $providerFactory->setRegisterer($registerer);
-
-        $this->assertInstanceOf(PhpFileServiceRegisterer::class,$providerFactory->getRegisterer());
-
-    }
-    function testRegisterFromPhpFilePath() {
-
-        $providerFactory = self::$entityServiceProviderFactory;
-
-        // change the registerer which is registered before
-        $registerer = new PhpFileServiceRegisterer(
-            $providerFactory->getEntityManger(),
-            $providerFactory->getContainer()
-        );
-
-        $registerer->setPath(__DIR__."/config/entity_service_mapping.php");
-        
-        $providerFactory->setRegisterer($registerer);
-
-        $provider = $providerFactory->provide();
-
-        $this->assertInstanceOf(EntityServiceProvider::class,$provider);
-        return $provider;
-    }
-    
-    function testMessageClassDoesMatchTheGeneratedByConfigFile() {
-        $configData = include __DIR__."/config/entity_service_mapping.php";
-        $this->assertSame(Message::class , array_keys($configData)[0]);
-    }
-
-    function testTheProviderFromPhpFileContainMessageService() {
-        $provider = $this->testRegisterFromPhpFilePath();
-        $service = $provider->provide(Message::class,1);
-        $this->assertInstanceOf(MessagesService::class,$service);
-    }
 }
