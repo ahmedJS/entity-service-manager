@@ -5,7 +5,6 @@ use Vekas\EntityService\Exceptions\WrongServiceTargetException;
 use Vekas\EntityService\Interfaces\EntityServiceProviderRegistererInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Container\ContainerInterface;
-use ReflectionAttribute;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
@@ -27,7 +26,7 @@ class AttributeServiceRegisterer implements EntityServiceProviderRegistererInter
     function register(): EntityServiceProvider {
         $classesMetadata = $this->getAllMetadata($this->entityManager);
         foreach($classesMetadata as $metadata)  {
-
+            $this->registerByMetadata($metadata);
         }
         return $this->entityServiceProvider;
     }
@@ -41,8 +40,9 @@ class AttributeServiceRegisterer implements EntityServiceProviderRegistererInter
     /**
      * @throws WrongServiceTargetException
      * when the service metadata class are applied for method or property 
+     * @param ClassMetadata $metadata
      */
-    function registerByMetadata(ClassMetadata $metadata) {
+    function registerByMetadata( $metadata) {
         $entityName = $metadata->getName();
         $class =  new \ReflectionClass( $entityName );
         $attributes = $class->getAttributes();

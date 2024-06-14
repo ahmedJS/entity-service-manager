@@ -15,6 +15,7 @@ use Vekas\EntityService\AttributeServiceRegisterer;
 use Vekas\EntityService\EntityServiceProvider;
 use Vekas\EntityService\EntityServiceProviderFactory;
 use Vekas\EntityService\Tests\Entities\Client;
+use Vekas\EntityService\Tests\EntityServices\ClientService;
 
 class EntityServiceProviderFactoryTest extends TestCase {
 
@@ -67,10 +68,16 @@ class EntityServiceProviderFactoryTest extends TestCase {
         $this->assertInstanceOf(MessagesService::class,$service);
     }
 
-    function testCreateProviderByEntityManager() {
+    function testCreateProviderFromEntityManager() {
         $emp = $this->getEntityManagerProviderByAttributes();
         $this->assertInstanceOf(EntityServiceProvider::class,$emp);
         $this->assertGreaterThan(0,count($emp->getServices()));
+    }
+
+    function testProvideServiceByEntityManagerRegisterer() {
+        $emp = $this->getEntityManagerProviderByAttributes();
+        $service = $emp->provide(Client::class,2);
+        $this->assertInstanceOf(ClientService::class,$service);
     }
 
     function getEntityManagerProviderByAttributes() {
@@ -91,6 +98,9 @@ class EntityServiceProviderFactoryTest extends TestCase {
 
         $em->method("getMetadataFactory")
             ->willReturn($metadataFactory);
+
+        $em->method("find")
+            ->willReturn(new Client);
 
             
         $di = new Container();
