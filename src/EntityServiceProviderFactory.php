@@ -14,17 +14,15 @@ use Vekas\EntityService\Interfaces\EntityServiceProviderRegistererInterface;
 class EntityServiceProviderFactory {
 
     /**
-     * @param EntityManagerInterface $entityManager 
      * @param EntityServiceProviderRegistererInterface $entityServiceProviderRegisterer
      */
     function __construct(
-        private ContainerInterface $container,
-        private $entityManager,
         private $entityServiceProviderRegisterer
     ) {}
     
 
     /**
+     * provide entityServiceProvider that all services classes are registerd in
      * @return EntityServiceProvider
      */
     function provide() {
@@ -47,14 +45,6 @@ class EntityServiceProviderFactory {
      */
     function setRegisterer($registerer) {
         $this->entityServiceProviderRegisterer = $registerer;
-    }
-
-    function getEntityManger() {
-        return $this->entityManager;
-    }
-
-    function getContainer() {
-        return $this->getContainer();
     }
 
 }

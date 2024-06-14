@@ -45,4 +45,8 @@ class EntityServiceProvider implements EntityServiceProviderInterface{
         $this->services[$entityClass] = $serviceClass;
     }
 
+    function getServices() {
+        return $this->services;
+    }
+
 }

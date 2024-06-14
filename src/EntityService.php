@@ -64,7 +64,7 @@ abstract class EntityService  {
 
             $entity = $this->entityManager->find($this->entityClassName,$id);
 
-            if(!$entity) {throw new EntityNotExistException(); };
+            if(!$entity) {throw new EntityNotExistException($this->entityClassName); };
             
             $this->entity = $entity;
 

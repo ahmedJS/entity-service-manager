@@ -7,8 +7,14 @@ use Vekas\EntityService\PhpFileServiceRegisterer;
 use Vekas\EntityService\Tests\Entities\Message;
 use Vekas\EntityService\Tests\EntityServices\MessagesService;
 use DI\Container;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadataFactory;
+use Doctrine\ORM\Tools\Console\EntityManagerProvider;
+use Doctrine\Persistence\Mapping\ClassMetadata;
+use Vekas\EntityService\AttributeServiceRegisterer;
 use Vekas\EntityService\EntityServiceProvider;
 use Vekas\EntityService\EntityServiceProviderFactory;
+use Vekas\EntityService\Tests\Entities\Client;
 
 class EntityServiceProviderFactoryTest extends TestCase {
 
@@ -17,6 +23,7 @@ class EntityServiceProviderFactoryTest extends TestCase {
      */
     private static $entityServiceProviderFactory;
 
+    
     static function  setUpBeforeClass(): void
     {
         $em = self::getEntityManager();
@@ -24,8 +31,6 @@ class EntityServiceProviderFactoryTest extends TestCase {
         $registerer = new ArrayEntityServiceRegisterer ($em,$di);
 
         $entityServiceProviderFactory = new EntityServiceProviderFactory(
-            $di,
-            $em,
             $registerer
         );
         
@@ -61,5 +66,47 @@ class EntityServiceProviderFactoryTest extends TestCase {
         $service = $provider->provide(Message::class,1);
         $this->assertInstanceOf(MessagesService::class,$service);
     }
+
+    function testCreateProviderByEntityManager() {
+        $emp = $this->getEntityManagerProviderByAttributes();
+        $this->assertInstanceOf(EntityServiceProvider::class,$emp);
+        $this->assertGreaterThan(0,count($emp->getServices()));
+    }
+
+    function getEntityManagerProviderByAttributes() {
+        $em = $this->createMock(EntityManager::class);
+
+        // ClassMetadata object used in the AttributeServiceRegisterer
+        $metadataFactory = $this->createMock(ClassMetadataFactory::class);
+
+        // ClassMetadata object used in the AttributeServiceRegisterer
+        $classMetadata = $this->createMock(ClassMetadata::class);
+
+        // this method is used in the AttributeServiceRegisterer
+        $classMetadata->method("getName")
+            ->willReturn(Client::class);
+
+        $metadataFactory->method("getAllMetadata")
+            ->willReturn([$classMetadata]);
+
+        $em->method("getMetadataFactory")
+            ->willReturn($metadataFactory);
+
+            
+        $di = new Container();
+        
+        // instantiate registerer
+        $registerer = new AttributeServiceRegisterer ($em,$di);
+
+        $entityServiceProviderFactory = new EntityServiceProviderFactory(
+            $registerer
+        );
+
+
+        $entityServiceProvider = $entityServiceProviderFactory->provide();
+        
+        return $entityServiceProvider;
+    }
+
 
 }

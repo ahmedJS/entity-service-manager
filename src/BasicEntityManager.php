@@ -18,7 +18,6 @@ class BasicEntityManager
         // Fake removal logic
         $key = array_search($entity, $this->entities);
         if ($key !== false) {
-            echo "removing entity : ".$entity->getId();
             $this->entities = array_filter($this->entities,function($_entity) use ($entity) {
                 return $entity !== $_entity;
             });
